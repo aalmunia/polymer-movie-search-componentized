@@ -9,7 +9,8 @@
                 font-family: monospace;
                 font-size: 16pt;
             }
-            .movie-.search-form-component {
+            /* @todo: Maquetar mejor */
+            .movie-search-form-component {
                 display: grid;
                 grid-template-columns: repeat(1, 1fr);
             }
@@ -52,30 +53,26 @@
                         type: String
                     },
                     _year: {
-                        type: Number
+                        type: Number,
+                        value: ''
                     },
                     _type: {
                         type: String,
-                        value: 'null'
+                        value: ''
                     }
                 }
             }
 
             doNewSearch() {                
                 this.dispatchEvent(new CustomEvent('movie-search-form-new-search', {
+                    bubbles: true,
+                    composed: true,
                     detail: {
                         title: this._title,
                         year: this._year,
-                        type: (this._type === 'null') ? '' : this._type
+                        type: this._type
                     }
                 }));
-            }
-
-            ready() {
-                super.ready();
-                this.addEventListener('movie-search-form-new-search', function (event) {
-                    console.log(event.detail);
-                });
             }
         }
         window.customElements.define(MovieSearchForm.is, MovieSearchForm);

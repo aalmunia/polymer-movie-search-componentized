@@ -1,0 +1,45 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-list/iron-list.html">
+
+<dom-module id="movie-list">
+    <template>
+        <style>
+            .movies-list {
+                min-height: 100px;
+                border: solid 1px black;
+            }
+
+            .movies-list>div {
+                border: solid 1px black;
+            }
+
+            .iron-list-movie-item:hover {
+                background-color: #AA0033;
+            }
+        </style>
+        <iron-list class="movies-list" items="[[movies]]">
+            <template>
+                <div class="iron-list-movie-item" data-item$="[[ item ]]" on-click="handleMovieClick">
+                    [[ item.Title ]]
+                </div>
+            </template>
+        </iron-list>
+    </template>
+    <script>
+        class MovieList extends Polymer.Element {
+            static get is() { return 'movie-list'; }
+            static get properties() {
+                return {
+                    movies: {
+                        type: Array
+                    }
+                }
+            }
+
+            handleMovieClick(event) {
+                // to-do
+            }
+        }
+        window.customElements.define(MovieList.is, MovieList);
+    </script>
+</dom-module>

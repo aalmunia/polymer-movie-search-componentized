@@ -1,6 +1,10 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-list/iron-list.html">
+
 <link rel="import" href="../movie-search-form/movie-search-form.html">
 <link rel="import" href="../dummy-component/dummy-component.html">
+<link rel="import" href="../movie-list/movie-list.html">
 
 <dom-module id="main-app">
   <template>
@@ -15,12 +19,14 @@
     
     <div>
       <movie-search-form></movie-search-form>
-      <dummy-component></dummy-component>
+      <movie-list movies="{{ movies }}"></movie-list>
+      <iron-ajax id="myxhr" on-response="handleSearchNewResults"></iron-ajax>
     </div>
 
   </template>
 
   <script>
+    var urlOMDB = 'http://www.omdbapi.com/?apikey=e477ed6a';
     /**
      * @customElement
      * @polymer
@@ -28,11 +34,51 @@
     class MainApp extends Polymer.Element {
       static get is() { return 'main-app'; }
       static get properties() {
-        return { /* PROPS HERE */ };
+        return {
+          movies: {
+            type: Array
+          }
+        };
       }
       ready() {
         super.ready();
-        console.log('MainApp:ready() OK');
+        this.addEventListener('movie-search-form-new-search', (event) => {          
+          this.parseSearchParams(event.detail);
+        });
+        this.addEventListener('movie-search-new-results', (event) => {
+          this.movies = event.detail.movies;
+        });
+      }
+
+      parseSearchParams(params) {
+        let goodURL = urlOMDB;
+        goodURL += (params.title !== '') ? '&s=' + params.title : '';
+        goodURL += (params.year !== '') ? '&y=' + params.year : '';
+        goodURL += (params.type !== '') ? '&type=' + params.type : '';
+        this.$.myxhr.url = goodURL;
+        this.$.myxhr.generateRequest();
+      }
+
+      handleNewResults() {
+        console.log('OMFG.....');
+      }
+
+      handleSearchNewResults(event, request) {        
+        let resultRaw = request.parseResponse();
+        let total = resultRaw.totalResults;
+        let resultData = resultRaw.Search;
+
+        console.log('Prev disparar evento movie-search-new-results');
+        console.log(resultData);
+
+        /* Quizás no haga falta disparar evento, solo alterar las props de los nodos hijos a este  */
+
+        this.dispatchEvent(new CustomEvent('movie-search-new-results', {
+          detail: {
+            movies: resultData,
+            totalResults: total
+          }
+        }));
       }
     }
 
