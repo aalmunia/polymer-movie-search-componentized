@@ -1,0 +1,7 @@
+{
+  "name": "movie-search-componentized",
+  "short_name": "movie-search-componentized",
+  "description": "This is the onboarding tutorial application separated in components",
+  "start_url": "/",
+  "display": "standalone"
+}

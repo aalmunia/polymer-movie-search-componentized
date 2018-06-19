@@ -1,0 +1,84 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<dom-module id="movie-search-form">
+    <template>
+        <style>
+            :host {
+                width: 300px;
+                height: 200px;
+                font-family: monospace;
+                font-size: 16pt;
+            }
+            .movie-.search-form-component {
+                display: grid;
+                grid-template-columns: repeat(1, 1fr);
+            }
+            .search-form-element {
+                grid-column: span 1;                
+            }
+        </style>
+        <div class="movie-search-form-component">
+            <fieldset>
+                <legend>Parámetros de búsqueda</legend>
+                <span class="search-form-element">
+                    <b>Título: </b>
+                    <input value="{{ _title::input }}" placeholder="Nombre de película..." />
+                </span>
+                <span class="search-form-element">
+                    <b>Año emisión: </b>
+                    <input value="{{ _year::input }}" placeholder="Año emisión..." />
+                </span>                
+                <span class="search-form-element" value="{{ _type::input }}">
+                    <b>Tipo contenido: </b>
+                    <select id="typeSearch">
+                        <option value="null" selected>TODOS LOS TIPOS</option>
+                        <option value="movie">Películas</option>
+                        <option value="series">Series</option>
+                        <option value="episode">Episodios</option>
+                    </select>
+                </span>
+                <span class="search-form-element">
+                    <input type="button" on-click="doNewSearch" value="Buscar" />
+                </span>
+            </fieldset>
+        </div>
+    </template>
+    <script>
+        class MovieSearchForm extends Polymer.Element {
+            static get is() { return 'movie-search-form' }
+            static get properties() {
+                return {
+                    _title: {
+                        type: String
+                    },
+                    _year: {
+                        type: Number
+                    },
+                    _type: {
+                        type: String,
+                        value: 'null'
+                    }
+                }
+            }
+
+            doNewSearch() {                
+                this.dispatchEvent(new CustomEvent('movie-search-form-new-search', {
+                    detail: {
+                        title: this._title,
+                        year: this._year,
+                        type: (this._type === 'null') ? '' : this._type
+                    }
+                }));
+            }
+
+            ready() {
+                super.ready();
+                this.addEventListener('movie-search-form-new-search', function (event) {
+                    console.log(event.detail);
+                });
+            }
+        }
+        window.customElements.define(MovieSearchForm.is, MovieSearchForm);
+    </script>
+
+</dom-module>

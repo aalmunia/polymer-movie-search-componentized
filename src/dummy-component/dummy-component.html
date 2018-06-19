@@ -1,0 +1,27 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<dom-module="dummy-component">
+    <template>
+        <style>
+            :host {
+                width: 200px;
+                height: 100px;
+            }
+        </style>
+        <h1>
+            THIS IS A DUMMY COMPONENT
+        </h1>
+    </template>
+    <script>
+        class DummyComponent extends Polymer.Element {
+            static get is() { return 'dummy-component'; }
+            static get properties() { return {} };
+            ready() {
+                super.ready();
+                console.log('DummyComponent::ready() OK');
+            }
+        }
+        window.customElements.define(DummyComponent.is, DummyComponent);
+    </script>
+
+    </dom-module>

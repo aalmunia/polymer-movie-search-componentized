@@ -1,0 +1,41 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../movie-search-form/movie-search-form.html">
+<link rel="import" href="../dummy-component/dummy-component.html">
+
+<dom-module id="main-app">
+  <template>
+    <style>
+      :host {
+        width: 800px;
+        height: 800px;
+        font-family: monospace;
+        font-size: 16pt;
+      }
+    </style>
+    
+    <div>
+      <movie-search-form></movie-search-form>
+      <dummy-component></dummy-component>
+    </div>
+
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class MainApp extends Polymer.Element {
+      static get is() { return 'main-app'; }
+      static get properties() {
+        return { /* PROPS HERE */ };
+      }
+      ready() {
+        super.ready();
+        console.log('MainApp:ready() OK');
+      }
+    }
+
+    window.customElements.define(MainApp.is, MainApp);
+  </script>
+</dom-module>
