@@ -26,6 +26,11 @@
   </template>
 
   <script>
+    /**
+     * IMPORTANTÍSIMO: Los componentes no deben escuchar los eventos de otros componentes,
+     * esta clase Aplicación nos sirve de orquestador de componentes. Debe escuchar los eventos
+     * de sus hijos y comuncárselos a otros hijos, pero no rompas el encapsulamiento en esto
+     */
     var urlOMDB = 'http://www.omdbapi.com/?apikey=e477ed6a';
     /**
      * @customElement
@@ -40,6 +45,13 @@
           }
         };
       }
+
+      /**
+       * @class MainApp
+       * @method ready
+       * @description Método de ciclo de vida de componente. Inicializamos los escuchadores
+       * aquí dentro
+       */
       ready() {
         super.ready();
         this.addEventListener('movie-search-form-new-search', (event) => {          
@@ -50,6 +62,10 @@
         });
       }
 
+      /**
+       * @method parseSearchParams
+       * @param {String} title El texto a buscar en el título de la película
+       */
       parseSearchParams(params) {
         let goodURL = urlOMDB;
         goodURL += (params.title !== '') ? '&s=' + params.title : '';
@@ -70,8 +86,6 @@
 
         console.log('Prev disparar evento movie-search-new-results');
         console.log(resultData);
-
-        /* Quizás no haga falta disparar evento, solo alterar las props de los nodos hijos a este  */
 
         this.dispatchEvent(new CustomEvent('movie-search-new-results', {
           detail: {
