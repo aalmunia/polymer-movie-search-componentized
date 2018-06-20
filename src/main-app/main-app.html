@@ -5,6 +5,8 @@
 <link rel="import" href="../movie-search-form/movie-search-form.html">
 <link rel="import" href="../dummy-component/dummy-component.html">
 <link rel="import" href="../movie-list/movie-list.html">
+<link rel="import" href="../movie-detail/movie-detail.html">
+<link rel="import" href="../paginator/paginator.html">
 
 <dom-module id="main-app">
   <template>
@@ -19,7 +21,16 @@
     
     <div>
       <movie-search-form></movie-search-form>
-      <movie-list movies="{{ movies }}"></movie-list>
+      <movie-list 
+        movies="[[ movies ]]"></movie-list>
+      <movie-detail 
+        title="[[ activeMovie.Title ]]" 
+        year="[[ activeMovie.Year ]]"
+        type="[[ activeMovie.Type ]]"
+        poster="[[ activeMovie.Poster ]]"></movie-detail>
+        <swc-paginator 
+          total-elements="[[ paginatorTotalElements ]]"
+          elements-per-page="[[ paginatorElementsPerPage ]]"></swc-paginator>
       <iron-ajax id="myxhr" on-response="handleSearchNewResults"></iron-ajax>
     </div>
 
@@ -42,6 +53,54 @@
         return {
           movies: {
             type: Array
+          },
+          activeMovie: {
+            isActive: {
+              type: Boolean,
+              value: false
+            },
+            Title: {
+              type: String,
+              value: ''
+            },
+            Year: {
+              type: String,
+              value: ''
+            },
+            Type: {
+              type: String,
+              value: ''
+            },
+            Poster: {
+              type: String,
+              value: ''
+            }
+          },
+          paginatorTotalElements: {
+            type: Number,
+            value: 0
+          },
+          paginatorElementsPerPage: {
+            type: Number,
+            value: 10
+          },
+          searchValues: {
+            title: {
+              type: String,
+              value: ''
+            },
+            year: {
+              type: String,
+              value: ''
+            },
+            type: {
+              type: String,
+              value: ''
+            },
+            page: {
+              type: Number,
+              value: 0
+            }
           }
         };
       }
@@ -54,11 +113,20 @@
        */
       ready() {
         super.ready();
-        this.addEventListener('movie-search-form-new-search', (event) => {          
+        this.addEventListener('movie-search-form-new-search', (event) => {
+          this.searchValues = event.detail;
           this.parseSearchParams(event.detail);
         });
         this.addEventListener('movie-search-new-results', (event) => {
           this.movies = event.detail.movies;
+          this.paginatorTotalElements = event.detail.totalResults;
+        });
+        this.addEventListener('movie-search-movie-detail', (event) => {          
+          this.activeMovie = event.detail.movie;
+        });
+        this.addEventListener('paginator-new-page', (event) => {
+          this.set('searchValues.page', event.detail.page);
+          this.parseSearchParams(this.searchValues);
         });
       }
 
@@ -71,22 +139,15 @@
         goodURL += (params.title !== '') ? '&s=' + params.title : '';
         goodURL += (params.year !== '') ? '&y=' + params.year : '';
         goodURL += (params.type !== '') ? '&type=' + params.type : '';
+        goodURL += (params.page !== 0) ? '&page=' + params.page : '';
         this.$.myxhr.url = goodURL;
         this.$.myxhr.generateRequest();
       }
 
-      handleNewResults() {
-        console.log('OMFG.....');
-      }
-
-      handleSearchNewResults(event, request) {        
+      handleSearchNewResults(event, request) {
         let resultRaw = request.parseResponse();
         let total = resultRaw.totalResults;
         let resultData = resultRaw.Search;
-
-        console.log('Prev disparar evento movie-search-new-results');
-        console.log(resultData);
-
         this.dispatchEvent(new CustomEvent('movie-search-new-results', {
           detail: {
             movies: resultData,

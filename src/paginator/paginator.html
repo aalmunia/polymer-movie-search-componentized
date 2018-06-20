@@ -1,0 +1,60 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<dom-module id="swc-paginator">
+    <template>
+        <style>
+        </style>
+        <div class="pagination-links-container">
+            <template is="dom-repeat" items="[[ totalPages ]]">
+                <span class="pagination-link">
+                    <input type="button" on-click="handlePageClick" value="[[ getPageNumber(index) ]]"
+                            data-item$="[[ getPageNumber(index) ]]" />
+                </span>
+            </template>
+        </div>
+    </template>
+    <script>
+        class SwcPaginator extends Polymer.Element {
+            static get is() { return 'swc-paginator' }
+            static get properties() {
+                return {
+                    totalElements: {
+                        type: Number,
+                        value: 0,
+                        observer: function(newValue) {
+                            let numPages = Math.ceil(newValue / this.elementsPerPage);
+                            this.set('totalPages', new Array(numPages));
+                        }
+                    },
+                    elementsPerPage: {
+                        type: Number,
+                        value: 10
+                    },
+                    totalPages: {
+                        type: Array,
+                        value: []
+                    }
+                }
+            }
+
+            ready() {
+                super.ready();                
+            }
+
+            getPageNumber(index) {
+                return ++index;
+            }
+
+            handlePageClick(event) {
+                this.dispatchEvent(new CustomEvent('paginator-new-page', {
+                    bubbles: true,
+                    composed: true,
+                    detail: {
+                        page: event.srcElement.getAttribute('data-item')
+                    }
+                }));
+            }
+        }
+        window.customElements.define(SwcPaginator.is, SwcPaginator);
+    </script>
+</dom-module>

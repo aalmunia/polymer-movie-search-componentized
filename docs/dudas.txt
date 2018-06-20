@@ -1,0 +1,4 @@
+- ¿Orquestador de componentes, SI / NO?
+    
+    SI: ¿Escuchan los componentes hijos los eventos? 
+    ¿El Orquestador los escucha y, a través de propiedades modifica los cambios?

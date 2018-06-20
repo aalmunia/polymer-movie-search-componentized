@@ -5,7 +5,7 @@
     <template>
         <style>
             .movies-list {
-                min-height: 100px;
+                min-height: 200px;
                 border: solid 1px black;
             }
 
@@ -37,7 +37,15 @@
             }
 
             handleMovieClick(event) {
-                // to-do
+                let dataItem = JSON.parse(event.srcElement.getAttribute('data-item'));
+                console.log(dataItem);
+                this.dispatchEvent(new CustomEvent('movie-search-movie-detail', {
+                    bubbles: true,
+                    composed: true,
+                    detail: {
+                        movie: dataItem
+                    }
+                }));
             }
         }
         window.customElements.define(MovieList.is, MovieList);

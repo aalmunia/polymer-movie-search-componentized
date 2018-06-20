@@ -3,13 +3,40 @@
 <dom-module id="movie-detail">
     <template>
         <style>
-        </style>        
+            :host {
+                min-width: 400px;
+                min-height: 400px;
+            }
+        </style>
+        <div>
+            <b>Título: [[ title ]]</b><br />
+            <b>Año: [[ year ]]</b><br />
+            <b>Tipo: [[ type ]]</b><br />
+            <b>Poster: </b><br />
+            <img src="[[ poster ]]" />
+        </div>
     </template>
     <script>
         class MovieDetail extends Polymer.Element {
             static get is() { return 'movie-detail' }
-        }    
-        
+            static get properties() {
+                return {
+                    title: {
+                        type: String
+                    },
+                    year: {
+                        type: Number
+                    },
+                    type: {
+                        type: String
+                    },
+                    poster: {
+                        type: String
+                    }
+                }
+            }
+        }
+        window.customElements.define(MovieDetail.is, MovieDetail);
     </script>
 
 </dom-module>
