@@ -17,19 +17,38 @@
         </div>
     </template>
     <script>
+        /**
+         * This component contains the details of the selected movie
+         */
         class MovieDetail extends Polymer.Element {
             static get is() { return 'movie-detail' }
             static get properties() {
                 return {
+                    /**
+                     * The selected movie title
+                     * @type {String}
+                     */
                     title: {
                         type: String
                     },
+                    /**
+                     * The selected movie year of first emission
+                     * @type {Number}
+                     */
                     year: {
                         type: Number
                     },
+                    /**
+                     * The selected movie type of element (movies|series|episodes)
+                     * @type {String}
+                     */
                     type: {
                         type: String
                     },
+                    /**
+                     * The selected movie poster image as supplied by OMDB API
+                     * @type {String|URL}
+                     */
                     poster: {
                         type: String
                     }

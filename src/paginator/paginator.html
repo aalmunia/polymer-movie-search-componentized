@@ -7,29 +7,50 @@
         <div class="pagination-links-container">
             <template is="dom-repeat" items="[[ totalPages ]]">
                 <span class="pagination-link">
-                    <input type="button" on-click="handlePageClick" value="[[ getPageNumber(index) ]]"
-                            data-item$="[[ getPageNumber(index) ]]" />
+                    <input type="button" on-click="handlePageClick" value="[[ _getPageNumber(index) ]]"
+                            data-item$="[[ _getPageNumber(index) ]]" />
                 </span>
             </template>
         </div>
     </template>
     <script>
+        /**
+         * This component is a paginator. It does nothing but receive a number of total elements, a number of elements
+         * per page, and renders buttons that fire new page events to be handled by whatever orchestrator needs a pagination
+         * functionality
+         */
         class SwcPaginator extends Polymer.Element {
             static get is() { return 'swc-paginator' }
             static get properties() {
                 return {
+                    /**
+                     * The total number of elements
+                     * @type {Number}
+                     */
                     totalElements: {
                         type: Number,
                         value: 0,
+                        /**
+                         * When new elements changes, we recalculate the number of pages
+                         */
                         observer: function(newValue) {
                             let numPages = Math.ceil(newValue / this.elementsPerPage);
                             this.set('totalPages', new Array(numPages));
                         }
                     },
+                    /**
+                     * The amount of elements in a page
+                     * @type {Number}
+                     */
                     elementsPerPage: {
                         type: Number,
                         value: 10
                     },
+                    /**
+                     * In order for dom-repeat to work OK, this has to be an array
+                     * @todo: Refactor
+                     * @type {Array}
+                     */
                     totalPages: {
                         type: Array,
                         value: []
@@ -37,14 +58,18 @@
                 }
             }
 
-            ready() {
-                super.ready();                
-            }
-
-            getPageNumber(index) {
+            /**
+             * This very silly method simply adds one to the number page (because Arrays start at ZERO)
+             * @return {Number}
+             */    
+            _getPageNumber(index) {
                 return ++index;
             }
 
+            /**
+             * This method handles the click in a page button
+             * @event paginator-new-page
+             */
             handlePageClick(event) {
                 this.dispatchEvent(new CustomEvent('paginator-new-page', {
                     bubbles: true,

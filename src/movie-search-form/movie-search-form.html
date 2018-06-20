@@ -1,5 +1,5 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
-
+<!-- @todo: Revisar que el campo de título no esté vacío. Inhabilitar botón para que no pueda hacer una búsqueda falsa -->
 <dom-module id="movie-search-form">
     <template>
         <style>
@@ -9,7 +9,7 @@
                 font-family: monospace;
                 font-size: 16pt;
             }
-            /* @todo: Maquetar mejor */
+            /* @todo: Maquetar mejor, es horrible */
             .movie-search-form-component {
                 display: grid;
                 grid-template-columns: repeat(1, 1fr);
@@ -45,17 +45,33 @@
         </div>
     </template>
     <script>
+        /**
+         * This component is the form used to make filtered requests to the OMBD API
+         * @todo: Either refactor the _ props or change the rest pof props for other components and add _ to 'em
+         */
         class MovieSearchForm extends Polymer.Element {
             static get is() { return 'movie-search-form' }
             static get properties() {
                 return {
+                    /**
+                     * This is the text string we will use to compare with the movie title
+                     * @type {String}
+                     */
                     _title: {
                         type: String
                     },
+                    /**
+                     * This is the year used to further filter the search
+                     * @type {Number}
+                     */
                     _year: {
                         type: Number,
                         value: ''
                     },
+                    /**
+                     * This is the type of element used to further filter the search
+                     * @type {String}
+                     */
                     _type: {
                         type: String,
                         value: ''
@@ -63,7 +79,12 @@
                 }
             }
 
-            doNewSearch() {                
+            /**
+             * This method fires an event with the data required for the search. The orchestrator will receive this event
+             * and initiate a new OMDB API request with the supplied params.
+             * @event movie-search-form-new-search
+             */
+            doNewSearch() {
                 this.dispatchEvent(new CustomEvent('movie-search-form-new-search', {
                     bubbles: true,
                     composed: true,

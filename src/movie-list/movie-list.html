@@ -19,24 +19,39 @@
         </style>
         <iron-list class="movies-list" items="[[movies]]">
             <template>
-                <div class="iron-list-movie-item" data-item$="[[ item ]]" on-click="handleMovieClick">
+                <div class="iron-list-movie-item" data-item$="[[ item ]]" on-click="_handleMovieClick">
                     [[ item.Title ]]
                 </div>
             </template>
         </iron-list>
     </template>
     <script>
-        class MovieList extends Polymer.Element {
+        
+        /**
+         * `MovieList` is the list of results obtained from the OMDB API
+         * @customElement
+         * @polymer
+         * @demo to-do
+         */
+        class MovieList extends Polymer.Element {            
             static get is() { return 'movie-list'; }
             static get properties() {
                 return {
+                    /**
+                     * The list of movies
+                     * @type {Array}
+                     */
                     movies: {
                         type: Array
                     }
                 }
             }
 
-            handleMovieClick(event) {
+            /**
+             * This method handles a click event in an element of the list of movies
+             * @event movie-search-movie-detail
+             */
+            _handleMovieClick(event) {
                 let dataItem = JSON.parse(event.srcElement.getAttribute('data-item'));
                 console.log(dataItem);
                 this.dispatchEvent(new CustomEvent('movie-search-movie-detail', {

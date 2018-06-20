@@ -1,9 +1,7 @@
-<!-- CORE POLYMER AND STUFF DEPS -->
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/iron-list/iron-list.html">
 
-<!-- SOPRA COMPONENTS -->
 <link rel="import" href="../movie-search-form/movie-search-form.html">
 <link rel="import" href="../movie-list/movie-list.html">
 <link rel="import" href="../movie-detail/movie-detail.html">
@@ -32,68 +30,127 @@
         <swc-paginator 
           total-elements="[[ paginatorTotalElements ]]"
           elements-per-page="[[ paginatorElementsPerPage ]]"></swc-paginator>
-      <iron-ajax id="myxhr" on-response="handleSearchNewResults"></iron-ajax>
+      <iron-ajax id="myxhr" on-response="_handleSearchNewResults"></iron-ajax>
     </div>
 
   </template>
 
-  <script>   
+  <script>
 
     var urlOMDB = 'http://www.omdbapi.com/?apikey=e477ed6a';
+    
     /**
+     * `MainApp` is the orchestrator of the components needed for the movie search solution
      * @customElement
      * @polymer
+     * @demo to-do
      */
     class MainApp extends Polymer.Element {
       static get is() { return 'main-app'; }
       static get properties() {
         return {
+          /**
+           * The movies found in the last search
+           * @type {Array}
+           */
           movies: {
             type: Array
           },
+          /**
+           * Selected and active omvie
+           * @type {Object}
+           */
           activeMovie: {
+            /**
+             * Whether or not to show the pagination component
+             * @type {Boolean}
+             */
             isActive: {
               type: Boolean,
               value: false
             },
+            /**
+             * The selected movie title
+             * @type {String}
+             */ 
             Title: {
               type: String,
               value: ''
             },
+            /**
+             * The selected movie year
+             * @type {String}             
+             */
             Year: {
               type: String,
               value: ''
             },
+            /**
+             * The selected movie type (movies|series|episodes)
+             * @type {String}
+             */
             Type: {
               type: String,
               value: ''
             },
+            /**
+             * The URL of the picture for the active movie
+             * @type {String}
+             */
             Poster: {
               type: String,
               value: ''
             }
           },
+          /**
+           * Amount of results obtained in last request to OMDB API
+           * @type {Integer}
+           */
           paginatorTotalElements: {
             type: Number,
             value: 0
           },
+          /**
+           * Amount of elements shown per page
+           * @type {Integer}
+           */
           paginatorElementsPerPage: {
             type: Number,
             value: 10
           },
+          /**
+           * Contains the values last used to search in OMDB API
+           * @type {Object}
+           */
           searchValues: {
+            /**
+             * Text string to search in title field
+             * @type {String}
+             */
             title: {
               type: String,
               value: ''
             },
+            /**
+             * Year used for search and filter
+             * @type {String}
+             */
             year: {
               type: String,
               value: ''
             },
+            /**
+             * Type of movie (movies|series|episodes)
+             * @type {String}
+             */
             type: {
               type: String,
               value: ''
             },
+            /**
+             * The page last requested to the OMDB API
+             * @type {Integer}
+             */
             page: {
               type: Number,
               value: 0
@@ -103,16 +160,14 @@
       }
 
       /**
-       * @class MainApp
-       * @method ready
-       * @description Método de ciclo de vida de componente. Inicializamos los escuchadores
-       * aquí dentro
+       * In here, we initialize all listeners for the events that the components will fire
        */
       ready() {
         super.ready();
         this.addEventListener('movie-search-form-new-search', (event) => {
           this.searchValues = event.detail;
-          this.parseSearchParams(event.detail);
+          let realURL = this._parseSearchParams(event.detail);
+          this._makeOMBDRequest(realURL);
         });
         this.addEventListener('movie-search-new-results', (event) => {
           this.movies = event.detail.movies;
@@ -123,25 +178,37 @@
         });
         this.addEventListener('paginator-new-page', (event) => {
           this.set('searchValues.page', event.detail.page);
-          this.parseSearchParams(this.searchValues);
+          let realURL = this._parseSearchParams(this.searchValues);
+          this._makeOMBDRequest(realURL);
         });
       }
 
       /**
-       * @method parseSearchParams
-       * @param {String} title El texto a buscar en el título de la película
+       * This method returns the URL with parameters to request more results to OMDB API
+       * @return {String}
        */
-      parseSearchParams(params) {
+      _parseSearchParams(params) {
         let goodURL = urlOMDB;
         goodURL += (params.title !== '') ? '&s=' + params.title : '';
         goodURL += (params.year !== '') ? '&y=' + params.year : '';
         goodURL += (params.type !== '') ? '&type=' + params.type : '';
         goodURL += (params.page !== 0) ? '&page=' + params.page : '';
-        this.$.myxhr.url = goodURL;
+        return goodURL;
+      }
+
+      /**
+       * This method makes the real API request
+       */
+      _makeOMBDRequest(URLRequest) {
+        this.$.myxhr.url = URLRequest;
         this.$.myxhr.generateRequest();
       }
 
-      handleSearchNewResults(event, request) {
+      /**
+       * This method receives the results from OMDB API and fires an event with that data
+       * @event movie-search-new-results
+       */
+      _handleSearchNewResults(event, request) {
         let resultRaw = request.parseResponse();
         let total = resultRaw.totalResults;
         let resultData = resultRaw.Search;
