@@ -1,34 +1,13 @@
-# \<movie-search-componentized\>
+This is the onboarding exercise, divided in the following components:
 
-This is the onboarding tutorial application separated in components
+- main-app: Orchestrator for the rest of the components. Listens to all children events.
+- movie-search-form: The form to insert the data to use in the OMDB API search
+- movie-list: The list of movies obtained from the OMDB API
+- movie-detail: The detail of the selected movie
+- paginator: A generic paginator
 
-## Install the Polymer-CLI
+To execute:
 
-First, make sure you have the [Polymer CLI](https://www.npmjs.com/package/polymer-cli) installed. Then run `polymer serve` to serve your application locally.
+polymer serve
 
-## Viewing Your Application
-
-```
-$ polymer serve
-```
-
-## Building Your Application
-
-```
-$ polymer build
-```
-
-This will create builds of your application in the `build/` directory, optimized to be served in production. You can then serve the built versions by giving `polymer serve` a folder to serve from:
-
-```
-$ polymer serve build/default
-```
-
-## Running Tests
-
-```
-$ polymer test
-```
-
-Your application is already set up to be tested via [web-component-tester](https://github.com/Polymer/web-component-tester). Run `polymer test` to run your application's test suite locally.
-#movie-app in five components
+in a console, and open the browser on the indicated URL
