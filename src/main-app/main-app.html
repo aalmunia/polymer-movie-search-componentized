@@ -1,9 +1,10 @@
+<!-- CORE POLYMER AND STUFF DEPS -->
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/iron-list/iron-list.html">
 
+<!-- SOPRA COMPONENTS -->
 <link rel="import" href="../movie-search-form/movie-search-form.html">
-<link rel="import" href="../dummy-component/dummy-component.html">
 <link rel="import" href="../movie-list/movie-list.html">
 <link rel="import" href="../movie-detail/movie-detail.html">
 <link rel="import" href="../paginator/paginator.html">
@@ -36,12 +37,8 @@
 
   </template>
 
-  <script>
-    /**
-     * IMPORTANTÍSIMO: Los componentes no deben escuchar los eventos de otros componentes,
-     * esta clase Aplicación nos sirve de orquestador de componentes. Debe escuchar los eventos
-     * de sus hijos y comuncárselos a otros hijos, pero no rompas el encapsulamiento en esto
-     */
+  <script>   
+
     var urlOMDB = 'http://www.omdbapi.com/?apikey=e477ed6a';
     /**
      * @customElement
